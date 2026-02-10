@@ -1,0 +1,13 @@
+[package]
+name = "app"
+version = "0.1.0"
+edition = "2024"
+
+[[bin]]
+name = "app"
+path = "src/main.rs"
+
+[dependencies]
+traits = { path = "../traits" }
+component1_lib = { path = "../component1_lib" }
+component2_lib = { path = "../component2_lib" }
