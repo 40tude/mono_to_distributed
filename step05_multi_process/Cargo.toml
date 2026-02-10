@@ -1,0 +1,3 @@
+[workspace]
+members = ["orchestrator", "service1", "service2", "common"]
+resolver = "3"
