@@ -9,13 +9,13 @@ struct ProcessingService;
 
 impl ProcessingService {
     fn new() -> Self {
-        eprintln!("[Service1] Initialized - Ready to process requests");
+        eprintln!("\t[Service1] Initialized - Ready to process requests");
         ProcessingService
     }
 
     fn process(&self, request: ProcessRequest) -> ProcessResponse {
-        eprintln!("[Service1] Processing request: {}", request.request_id);
-        eprintln!("[Service1] Input value: {}", request.value);
+        eprintln!("\t[Service1] Processing request: {}", request.request_id);
+        eprintln!("\t[Service1] Input value: {}", request.value);
 
         // Simulate some processing (multiply by 2)
         let result = request.value * 2;
@@ -29,8 +29,8 @@ impl ProcessingService {
 }
 
 fn main() {
-    eprintln!("Service 1: Processing Service");
-    eprintln!("Listening on STDIN for JSON messages...\n");
+    eprintln!("\t[Service1] Processing Service");
+    eprintln!("\t[Service1] Listening on STDIN for JSON messages...");
 
     let service = ProcessingService::new();
     let running = Arc::new(AtomicBool::new(true));
@@ -59,25 +59,54 @@ fn main() {
                         stdout.flush().unwrap();
                     }
                     Ok(Message::Shutdown) => {
-                        eprintln!("[Service1] Shutdown signal received");
+                        eprintln!("\t[Service1] Shutdown signal received");
                         running.store(false, Ordering::Relaxed);
                         break;
                     }
                     Ok(_) => {
-                        eprintln!("[Service1] Unexpected message type");
+                        eprintln!("\t[Service1] Unexpected message type");
                     }
                     Err(e) => {
-                        eprintln!("[Service1] Failed to parse message: {}", e);
+                        eprintln!("\t[Service1] Failed to parse message: {}", e);
                     }
                 }
             }
             Err(e) => {
-                eprintln!("[Service1] Error reading line: {}", e);
+                eprintln!("\t[Service1] Error reading line: {}", e);
                 break;
             }
         }
     }
 
-    eprintln!("[Service1] Shutting down");
+    eprintln!("\t[Service1] Shutting down");
 }
 
+#[cfg(test)]
+mod test {
+    use super::*;
+    use common::ProcessRequest;
+
+    #[test]
+    fn negative_value_stays_negative() {
+        let service = ProcessingService::new();
+        let request = ProcessRequest {
+            value: -18,
+            request_id: "test-1".to_string(),
+        };
+        let response = service.process(request);
+        assert!(response.processed);
+        assert_eq!(response.value, -36);
+    }
+
+    #[test]
+    fn process_doubles_value() {
+        let service = ProcessingService::new();
+        let request = ProcessRequest {
+            value: 21,
+            request_id: "test-2".to_string(),
+        };
+        let response = service.process(request);
+        assert_eq!(response.value, 42);
+        assert!(response.processed);
+    }
+}

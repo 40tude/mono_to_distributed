@@ -1,8 +1,5 @@
 // component1.rs
 
-// use serde::{Deserialize, Serialize};
-
-// #[derive(Debug, Serialize, Deserialize)]
 #[derive(Debug)]
 pub struct Component1Data {
     pub value: i32,
@@ -19,13 +16,13 @@ impl Default for Component1 {
 
 impl Component1 {
     pub fn new() -> Self {
-        println!("[Component1] Initialized");
+        println!("\t[Component1] Initialized");
         Component1
     }
 
     pub fn process(&self, input: i32) -> Component1Data {
-        println!("[Component1] Processing value: {}", input);
-        let result = input * 2; // Simple processing: multiply by 2
+        println!("\t[Component1] Processing value: {}", input);
+        let result = input * 2;
 
         Component1Data {
             value: result,
@@ -34,8 +31,20 @@ impl Component1 {
     }
 
     pub fn validate(&self, data: &Component1Data) -> bool {
-        println!("[Component1] Validating data: {:?}", data);
+        println!("\t[Component1] Validating data: {:?}", data);
         data.processed && data.value > 0
     }
 }
 
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn negative_number_are_invalid() {
+        let comp1 = Component1::new();
+        let data1 = comp1.process(-18);
+        let is_valid = comp1.validate(&data1);
+        assert!(!is_valid);
+    }
+}

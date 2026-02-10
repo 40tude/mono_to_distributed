@@ -1,3 +1,5 @@
+// lib.rs
+
 // Rust guideline compliant 2025-05-01
 //
 // Shared plugin interface: traits, data structs, and FFI symbol definitions.
@@ -52,3 +54,4 @@ pub type PluginVersion = unsafe extern "C" fn() -> *const std::ffi::c_char;
 pub const PLUGIN_CREATE_SYMBOL: &[u8] = b"_plugin_create";
 pub const PLUGIN_DESTROY_SYMBOL: &[u8] = b"_plugin_destroy";
 pub const PLUGIN_VERSION_SYMBOL: &[u8] = b"_plugin_version";
+

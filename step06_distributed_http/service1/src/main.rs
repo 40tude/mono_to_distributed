@@ -9,8 +9,8 @@ use tokio::net::TcpListener;
 const PORT: u16 = 3001;
 
 fn process(request: ProcessRequest) -> ProcessResponse {
-    eprintln!("[Service1] Processing request: {}", request.request_id);
-    eprintln!("[Service1] Input value: {}", request.value);
+    eprintln!("\t[Service1] Processing request: {}", request.request_id);
+    eprintln!("\t[Service1] Input value: {}", request.value);
 
     // Business logic: multiply by 2
     let result = request.value * 2;
@@ -32,17 +32,44 @@ async fn handle_health() -> &'static str {
 
 #[tokio::main]
 async fn main() {
-    eprintln!("Service 1: Processing  Service");
+    eprintln!("\t[Service1] Processing  Service");
 
     let app = Router::new()
         .route("/process", post(handle_process))
         .route("/health", get(handle_health));
 
     let addr = format!("0.0.0.0:{PORT}");
-    eprintln!("[Service1] Listening on http://{addr}");
+    eprintln!("\t[Service1] Listening on http://{addr}");
 
     let listener = TcpListener::bind(&addr).await.expect("failed to bind port");
 
     axum::serve(listener, app).await.expect("server error");
 }
 
+#[cfg(test)]
+mod test {
+
+    use super::*;
+
+    #[test]
+    fn negative_value_stays_negative() {
+        let request = ProcessRequest {
+            value: -18,
+            request_id: "test-1".to_string(),
+        };
+        let response = process(request);
+        assert!(response.processed);
+        assert_eq!(response.value, -36);
+    }
+
+    #[test]
+    fn process_doubles_value() {
+        let request = ProcessRequest {
+            value: 21,
+            request_id: "test-2".to_string(),
+        };
+        let response = process(request);
+        assert_eq!(response.value, 42);
+        assert!(response.processed);
+    }
+}

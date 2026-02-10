@@ -5,6 +5,6 @@ In `step05_multi_process\orchestrator\src\main.rs`
 
 ```powershell
 cargo build                    # build all workspace members
-
 cargo run -p orchestrator      # run orchestrator (requires service1 & service2 built first)
+cargo test
 ```

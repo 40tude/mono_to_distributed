@@ -14,12 +14,12 @@ pub struct Component1;
 
 impl Component1 {
     pub fn new() -> Self {
-        println!("[Component1 Lib] Initialized");
+        println!("\t[Component1 Lib] Initialized");
         Component1
     }
 
     pub fn process(&self, input: i32) -> Component1Data {
-        println!("[Component1 Lib] Processing value: {}", input);
+        println!("\t[Component1 Lib] Processing value: {}", input);
         let result = input * 2;
 
         Component1Data {
@@ -29,7 +29,7 @@ impl Component1 {
     }
 
     pub fn validate(&self, data: &Component1Data) -> bool {
-        println!("[Component1 Lib] Validating data: {:?}", data);
+        println!("\t[Component1 Lib] Validating data: {:?}", data);
         data.processed && data.value > 0
     }
 }

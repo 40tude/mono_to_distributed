@@ -15,9 +15,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let client = reqwest::Client::new();
 
+    println!("\n--- Processing Distributed Pipeline ---");
+
+    // Generate a unique request ID
     let request_id = Uuid::new_v4().to_string();
     let input_value = 42;
-    // println!("Input value: {input_value}\n");
 
     println!("[Orchestrator] Starting request: {request_id}");
     println!("[Orchestrator] Input value: {input_value}");

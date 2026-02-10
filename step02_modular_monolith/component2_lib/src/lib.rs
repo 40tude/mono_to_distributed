@@ -14,12 +14,12 @@ pub struct Component2;
 
 impl Component2 {
     pub fn new() -> Self {
-        println!("[Component2 Lib] Initialized");
+        println!("\t[Component2 Lib] Initialized");
         Component2
     }
 
     pub fn transform(&self, input: i32) -> Component2Data {
-        println!("[Component2 Lib] Transforming value: {}", input);
+        println!("\t[Component2 Lib] Transforming value: {}", input);
         let transformed = format!("Value-{:04}", input);
 
         Component2Data {
@@ -29,7 +29,7 @@ impl Component2 {
     }
 
     pub fn analyze(&self, data: &Component2Data) -> String {
-        println!("[Component2 Lib] Analyzing data: {:?}", data);
+        println!("\t[Component2 Lib] Analyzing data: {:?}", data);
         format!("Analysis: {} maps to {}", data.original, data.transformed)
     }
 }
@@ -39,15 +39,15 @@ pub fn get_version() -> &'static str {
     env!("CARGO_PKG_VERSION")
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
 
-    #[test]
-    fn test_transform() {
-        let comp = Component2::new();
-        let result = comp.transform(42);
-        assert_eq!(result.original, 42);
-        assert_eq!(result.transformed, "Value-0042");
-    }
-}
+//     #[test]
+//     fn test_transform() {
+//         let comp = Component2::new();
+//         let result = comp.transform(42);
+//         assert_eq!(result.original, 42);
+//         assert_eq!(result.transformed, "Value-0042");
+//     }
+// }

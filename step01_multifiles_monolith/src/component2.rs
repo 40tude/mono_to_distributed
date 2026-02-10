@@ -1,8 +1,5 @@
 // component2.rs
 
-// use serde::{Deserialize, Serialize};
-
-// #[derive(Debug, Serialize, Deserialize)]
 #[derive(Debug)]
 pub struct Component2Data {
     pub original: i32,
@@ -19,12 +16,12 @@ impl Default for Component2 {
 
 impl Component2 {
     pub fn new() -> Self {
-        println!("[Component2] Initialized");
+        println!("\t[Component2] Initialized");
         Component2
     }
 
     pub fn transform(&self, input: i32) -> Component2Data {
-        println!("[Component2] Transforming value: {}", input);
+        println!("\t[Component2] Transforming value: {}", input);
         let transformed = format!("Value-{:04}", input);
 
         Component2Data {
@@ -34,8 +31,19 @@ impl Component2 {
     }
 
     pub fn analyze(&self, data: &Component2Data) -> String {
-        println!("[Component2] Analyzing data: {:?}", data);
+        println!("\t[Component2] Analyzing data: {:?}", data);
         format!("Analysis: {} maps to {}", data.original, data.transformed)
     }
 }
 
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test_transform() {
+        let comp = Component2::new();
+        let result = comp.transform(42);
+        assert_eq!(result.original, 42);
+        assert_eq!(result.transformed, "Value-0042");
+    }
+}

@@ -1,3 +1,5 @@
+// lib.rs
+
 // Rust guideline compliant 2025-05-01
 //
 // Component2 DLL plugin: implements TransformPlugin trait from plugin_interface.
@@ -12,14 +14,14 @@ struct Component2;
 
 impl Component2 {
     fn new() -> Self {
-        println!("[Component2 DLL] Initialized");
+        println!("\t[Component2 DLL] Initialized");
         Self
     }
 }
 
 impl TransformPlugin for Component2 {
     fn transform(&self, input: i32) -> TransformResult {
-        println!("[Component2 DLL] Transforming value: {input}");
+        println!("\t[Component2 DLL] Transforming value: {input}");
         let transformed = format!("Value-{input:04}");
         TransformResult {
             original: input,
@@ -28,7 +30,7 @@ impl TransformPlugin for Component2 {
     }
 
     fn analyze(&self, data: &TransformResult) -> String {
-        println!("[Component2 DLL] Analyzing data: {data:?}");
+        println!("\t[Component2 DLL] Analyzing data: {data:?}");
         format!("Analysis: {} maps to {}", data.original, data.transformed)
     }
 }
@@ -36,7 +38,10 @@ impl TransformPlugin for Component2 {
 /// # Safety
 /// Returns a heap-allocated trait object pointer. Caller must pair with `_plugin_destroy`.
 #[unsafe(no_mangle)]
-#[expect(improper_ctypes_definitions, reason = "trait object pointer crosses DLL boundary by design")]
+#[expect(
+    improper_ctypes_definitions,
+    reason = "trait object pointer crosses DLL boundary by design"
+)]
 pub extern "C" fn _plugin_create() -> *mut dyn TransformPlugin {
     let plugin = Component2::new();
     Box::into_raw(Box::new(plugin))
@@ -45,7 +50,10 @@ pub extern "C" fn _plugin_create() -> *mut dyn TransformPlugin {
 /// # Safety
 /// `plugin` must be a pointer previously returned by `_plugin_create` and not yet destroyed.
 #[unsafe(no_mangle)]
-#[expect(improper_ctypes_definitions, reason = "trait object pointer crosses DLL boundary by design")]
+#[expect(
+    improper_ctypes_definitions,
+    reason = "trait object pointer crosses DLL boundary by design"
+)]
 pub extern "C" fn _plugin_destroy(plugin: *mut dyn TransformPlugin) {
     println!("[Component2 DLL] Destroying plugin instance");
     if !plugin.is_null() {
@@ -59,7 +67,9 @@ pub extern "C" fn _plugin_destroy(plugin: *mut dyn TransformPlugin) {
 /// Returns the crate version as a null-terminated C string.
 #[unsafe(no_mangle)]
 pub extern "C" fn _plugin_version() -> *const c_char {
-    concat!(env!("CARGO_PKG_VERSION"), "\0").as_ptr().cast::<c_char>()
+    concat!(env!("CARGO_PKG_VERSION"), "\0")
+        .as_ptr()
+        .cast::<c_char>()
 }
 
 #[cfg(test)]
@@ -83,3 +93,4 @@ mod tests {
         assert!(analysis.contains("Value-0042"));
     }
 }
+

@@ -59,7 +59,7 @@ impl ServiceHandle {
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
-    println!("\n\nPhase 04: Multi process\n");
+    println!("\n\nPhase 05: Multi process\n");
 
     const HEADER: &str = "C:/Users/phili/rust_builds/Documents/Programmation/rust/01_xp/048_mono_to_distributed/step05_multi_process";
     // const HEADER: &str = "target";
@@ -78,6 +78,7 @@ async fn main() -> std::io::Result<()> {
     };
 
     // Start services (these could be on different machines in a real distributed system)
+    // Invert the 2 lines below
     let mut service1 = ServiceHandle::new("Service1", &service1_path)?;
     let mut service2 = ServiceHandle::new("Service2", &service2_path)?;
 
@@ -86,13 +87,12 @@ async fn main() -> std::io::Result<()> {
     // Generate a unique request ID
     let request_id = Uuid::new_v4().to_string();
     let input_value = 42;
-    println!("Input value: {input_value}\n");
 
     println!("[Orchestrator] Starting request: {}", request_id);
     println!("[Orchestrator] Input value: {}", input_value);
 
     // Step 1: Send to Service1 (processing)
-    println!("\n[Orchestrator] Sending to Service1...");
+    println!("[Orchestrator] Sending to Service1...");
     let process_request = ProcessRequest {
         value: input_value,
         request_id: request_id.clone(),

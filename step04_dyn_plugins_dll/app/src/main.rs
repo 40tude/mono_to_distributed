@@ -1,3 +1,5 @@
+// main.rs
+
 // Rust guideline compliant 2025-05-01
 //
 // Host application: dynamically loads, uses, and unloads component DLL plugins.
@@ -32,7 +34,7 @@ fn plugin_path(name: &str) -> String {
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    println!("\n\nPhase 04: Dynamic Plugins (runtime DLL load/unload)\n");
+    println!("\n\nPhase 04: Modular Application with Dynamic Plugins (runtime DLL load/unload)\n");
 
     println!("--- Processing Pipeline ---");
 
@@ -40,7 +42,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     println!("Input value: {input_value}\n");
 
     // Component 1 processing (from DLL)
-    let comp1_path = plugin_path("component1_lib");
+    let comp1_path = plugin_path("component1");
     println!("Loading component1 DLL from: {comp1_path}");
 
     let process_result = {
@@ -76,7 +78,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     };
 
     // Component 2 processing (from DLL)
-    let comp2_path = plugin_path("component2_lib");
+    let comp2_path = plugin_path("component2");
     println!("Loading component2 DLL from: {comp2_path}");
 
     let _transform_result = {
@@ -116,7 +118,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     // println!("Processed value : {}", process_result.value);
     // println!("Transformed     : {}", transform_result.transformed);
 
-    println!("\nExecution complete");
+    println!("Execution complete");
 
     Ok(())
 }
+

@@ -9,13 +9,13 @@ struct TransformationService;
 
 impl TransformationService {
     fn new() -> Self {
-        eprintln!("[Service2] Initialized - Ready to transform requests");
+        eprintln!("\t[Service2] Initialized - Ready to transform requests");
         TransformationService
     }
 
     fn transform(&self, request: TransformRequest) -> TransformResponse {
-        eprintln!("[Service2] Transforming request: {}", request.request_id);
-        eprintln!("[Service2] Input value: {}", request.value);
+        eprintln!("\t[Service2] Transforming request: {}", request.request_id);
+        eprintln!("\t[Service2] Input value: {}", request.value);
 
         // Transform the value to a formatted string
         let transformed = format!("Value-{:04}", request.value);
@@ -29,8 +29,8 @@ impl TransformationService {
 }
 
 fn main() {
-    eprintln!("Service 2: Transformation Service");
-    eprintln!("Listening on STDIN for JSON messages...");
+    eprintln!("\t[Service2] Transformation Service");
+    eprintln!("\t[Service2] Listening on STDIN for JSON messages...");
 
     let service = TransformationService::new();
     let running = Arc::new(AtomicBool::new(true));
@@ -59,24 +59,53 @@ fn main() {
                         stdout.flush().unwrap();
                     }
                     Ok(Message::Shutdown) => {
-                        eprintln!("[Service2] Shutdown signal received");
+                        eprintln!("\t[Service2] Shutdown signal received");
                         running.store(false, Ordering::Relaxed);
                         break;
                     }
                     Ok(_) => {
-                        eprintln!("[Service2] Unexpected message type");
+                        eprintln!("\t[Service2] Unexpected message type");
                     }
                     Err(e) => {
-                        eprintln!("[Service2] Failed to parse message: {}", e);
+                        eprintln!("\t[Service2] Failed to parse message: {}", e);
                     }
                 }
             }
             Err(e) => {
-                eprintln!("[Service2] Error reading line: {}", e);
+                eprintln!("\t[Service2] Error reading line: {}", e);
                 break;
             }
         }
     }
 
-    eprintln!("[Service2] Shutting down");
+    eprintln!("\t[Service2] Shutting down");
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use common::TransformRequest;
+
+    #[test]
+    fn transform_formats_value() {
+        let service = TransformationService::new();
+        let request = TransformRequest {
+            value: 42,
+            request_id: "test-1".to_string(),
+        };
+        let response = service.transform(request);
+        assert_eq!(response.original, 42);
+        assert_eq!(response.transformed, "Value-0042");
+    }
+
+    #[test]
+    fn transform_pads_small_value() {
+        let service = TransformationService::new();
+        let request = TransformRequest {
+            value: 7,
+            request_id: "test-2".to_string(),
+        };
+        let response = service.transform(request);
+        assert_eq!(response.transformed, "Value-0007");
+    }
 }
