@@ -1,12 +1,23 @@
-# Rust Monolith to Distributed System - Practical Guide
+# From Monolith to Distributed Systems in Rust: A Practical Introduction
 
-> **Warning (Linux/macOS users):** The .cargo/ folder contains Windows-specific configuration (custom target-dir for OneDrive, CPU flags). Delete or rename before building:
+> **Warning:** The `.cargo/` folder contains Windows-specific configuration (custom target-dir for OneDrive, CPU flags). Delete or rename before building:
 > ```bash
-> rm -rf .cargo   # or: mv .cargo .cargo.bak
+> mv .cargo .cargo.bak
 > ```
+> More information on this [page](https://www.40tude.fr/docs/06_programmation/rust/005_my_rust_setup_win11/my_rust_setup_win11.html#onedrive).
 
+* A hands-on journey through small, working projects to understand when—and why—architecture needs to evolve.
+* [Associated Web page](https://www.40tude.fr/docs/06_programmation/rust/026_monolith_to_distributed/monolith_to_distirbuted.html)
 
-This project demonstrates the evolution from a monolithic application to a distributed system.
+## Usage
+* Open each workspace in order in your preferred IDE
+* Rename the `.cargo/` folder
+* Read the `QUICK_START.md`. It contains specific instruction like:
+    ```powershell
+    cargo build
+    cargo run
+    cargo test
+    ```
 
 ## License
 

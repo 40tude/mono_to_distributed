@@ -1,4 +1,4 @@
-In `step05_multi_process\orchestrator\src\main.rs`
+In `step06_multi_process\orchestrator\src\main.rs`
 * Comment the line `const HEADER: &str = "C:/Users/phili/...`
 * Uncomment the line `const HEADER: &str = "target`
 
