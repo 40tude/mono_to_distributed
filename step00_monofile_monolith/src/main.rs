@@ -15,7 +15,7 @@ fn main() {
     let is_valid = comp1.validate(&data1);
     println!("Component1 result: {:?}, Valid: {}", data1, is_valid);
 
-    // Component 2 transforming (use Component 1's output)
+    // Component 2 transforming (use component 1's output)
     let comp2 = Component2::new();
     let data2 = comp2.transform(data1.value);
     let analysis = comp2.analyze(&data2);
@@ -109,4 +109,3 @@ mod test {
         assert!(!is_valid);
     }
 }
-

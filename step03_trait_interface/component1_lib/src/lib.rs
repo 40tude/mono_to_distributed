@@ -1,6 +1,4 @@
-// Component1 — implements the Processor trait from the shared `traits` crate
-//
-// Rust guideline compliant 2025-05-14
+// lib.rs
 
 use traits::{ProcessResult, Processor};
 

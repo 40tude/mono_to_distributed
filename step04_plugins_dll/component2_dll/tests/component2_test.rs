@@ -1,6 +1,7 @@
 // component2_test.rs
 
-use component2_dll::Component2;
+use component2::Component2;
+use traits::Transformer;
 
 #[test]
 fn test_transform() {

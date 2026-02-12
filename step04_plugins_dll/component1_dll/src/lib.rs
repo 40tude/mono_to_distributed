@@ -1,40 +1,35 @@
 // lib.rs
 
-// use serde::{Deserialize, Serialize};
-
-// #[derive(Debug, Serialize, Deserialize, Clone)]
-#[derive(Debug)]
-pub struct Component1Data {
-    pub value: i32,
-    pub processed: bool,
-}
+use traits::{ProcessResult, Processor};
 
 #[derive(Default)]
 pub struct Component1;
 
 impl Component1 {
     pub fn new() -> Self {
-        println!("\t[Component1 DLL] Initialized");
+        println!("\t[Component1 Lib] Initialized");
         Component1
     }
+}
 
-    pub fn process(&self, input: i32) -> Component1Data {
-        println!("\t[Component1 DLL] Processing value: {}", input);
+impl Processor for Component1 {
+    fn process(&self, input: i32) -> ProcessResult {
+        println!("\t[Component1 Lib] Processing value: {}", input);
         let result = input * 2;
 
-        Component1Data {
+        ProcessResult {
             value: result,
             processed: true,
         }
     }
 
-    pub fn validate(&self, data: &Component1Data) -> bool {
-        println!("\t[Component1 DLL] Validating data: {:?}", data);
+    fn validate(&self, data: &ProcessResult) -> bool {
+        println!("\t[Component1 Lib] Validating data: {:?}", data);
         data.processed && data.value > 0
     }
 }
 
-// Public API for version info
+/// Public API for version info.
 pub fn get_version() -> &'static str {
     env!("CARGO_PKG_VERSION")
 }

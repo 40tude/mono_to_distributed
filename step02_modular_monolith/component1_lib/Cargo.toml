@@ -1,4 +1,4 @@
 [package]
-name = "component1_lib"
+name = "component1"
 version = "0.1.0"
 edition = "2024"

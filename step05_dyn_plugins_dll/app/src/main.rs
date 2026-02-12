@@ -34,7 +34,7 @@ fn plugin_path(name: &str) -> String {
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    println!("\n\nPhase 04: Modular Application with Dynamic Plugins (runtime DLL load/unload)\n");
+    println!("\n\nPhase 05: Modular Application with Dynamic Plugins (runtime DLL load/unload)\n");
 
     println!("--- Processing Pipeline ---");
 
@@ -122,4 +122,3 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     Ok(())
 }
-

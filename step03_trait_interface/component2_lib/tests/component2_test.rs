@@ -1,6 +1,6 @@
 // component2_test.rs
 
-use component2_lib::Component2;
+use component2::Component2;
 use traits::Transformer;
 
 #[test]

@@ -1,8 +1,5 @@
 // lib.rs
 
-// use serde::{Deserialize, Serialize};
-
-// #[derive(Debug, Serialize, Deserialize, Clone)]
 #[derive(Debug)]
 pub struct Component1Data {
     pub value: i32,

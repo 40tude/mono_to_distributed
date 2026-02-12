@@ -1,7 +1,5 @@
 // lib.rs
 
-// Rust guideline compliant 2025-05-01
-//
 // Component2 DLL plugin: implements TransformPlugin trait from plugin_interface.
 // Exports extern "C" factory functions for dynamic loading.
 

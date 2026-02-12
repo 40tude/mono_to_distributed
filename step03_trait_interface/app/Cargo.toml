@@ -9,5 +9,5 @@ path = "src/main.rs"
 
 [dependencies]
 traits = { path = "../traits" }
-component1_lib = { path = "../component1_lib" }
-component2_lib = { path = "../component2_lib" }
+component1 = { path = "../component1_lib" }
+component2 = { path = "../component2_lib" }

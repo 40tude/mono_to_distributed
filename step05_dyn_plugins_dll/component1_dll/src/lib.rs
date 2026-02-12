@@ -1,7 +1,5 @@
 // lib.rs
 
-// Rust guideline compliant 2025-05-01
-//
 // Component1 DLL plugin: implements ProcessPlugin trait from plugin_interface.
 // Exports extern "C" factory functions for dynamic loading.
 
@@ -92,4 +90,3 @@ mod tests {
         assert!(comp.validate(&result));
     }
 }
-

@@ -1,7 +1,5 @@
 // lib.rs
 
-// Rust guideline compliant 2025-05-01
-//
 // Shared plugin interface: traits, data structs, and FFI symbol definitions.
 // Both plugin DLLs and the host app depend on this crate.
 
@@ -35,16 +33,28 @@ pub trait TransformPlugin: Send + Sync {
 
 // FFI function pointer types for dynamic loading
 
-#[expect(improper_ctypes_definitions, reason = "trait object pointers cross DLL boundary by design")]
+#[expect(
+    improper_ctypes_definitions,
+    reason = "trait object pointers cross DLL boundary by design"
+)]
 pub type ProcessPluginCreate = unsafe extern "C" fn() -> *mut dyn ProcessPlugin;
 
-#[expect(improper_ctypes_definitions, reason = "trait object pointers cross DLL boundary by design")]
+#[expect(
+    improper_ctypes_definitions,
+    reason = "trait object pointers cross DLL boundary by design"
+)]
 pub type ProcessPluginDestroy = unsafe extern "C" fn(*mut dyn ProcessPlugin);
 
-#[expect(improper_ctypes_definitions, reason = "trait object pointers cross DLL boundary by design")]
+#[expect(
+    improper_ctypes_definitions,
+    reason = "trait object pointers cross DLL boundary by design"
+)]
 pub type TransformPluginCreate = unsafe extern "C" fn() -> *mut dyn TransformPlugin;
 
-#[expect(improper_ctypes_definitions, reason = "trait object pointers cross DLL boundary by design")]
+#[expect(
+    improper_ctypes_definitions,
+    reason = "trait object pointers cross DLL boundary by design"
+)]
 pub type TransformPluginDestroy = unsafe extern "C" fn(*mut dyn TransformPlugin);
 
 /// Returns a pointer to a null-terminated version string owned by the DLL.
@@ -54,4 +64,3 @@ pub type PluginVersion = unsafe extern "C" fn() -> *const std::ffi::c_char;
 pub const PLUGIN_CREATE_SYMBOL: &[u8] = b"_plugin_create";
 pub const PLUGIN_DESTROY_SYMBOL: &[u8] = b"_plugin_destroy";
 pub const PLUGIN_VERSION_SYMBOL: &[u8] = b"_plugin_version";
-

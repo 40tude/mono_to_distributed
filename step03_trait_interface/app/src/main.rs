@@ -1,16 +1,14 @@
 // main.rs
-//
-// Rust guideline compliant 2025-05-14
 
-use component1_lib::Component1;
-use component2_lib::Component2;
+use component1::Component1;
+use component2::Component2;
 use traits::{Processor, Transformer};
 
 fn main() {
-    println!("\n\nPhase 02.5: Trait-Based Interface (shared contracts)\n");
+    println!("\n\nPhase 03: Trait-Based Interface (shared contracts)\n");
 
-    println!("Component1 version: {}", component1_lib::get_version());
-    println!("Component2 version: {}", component2_lib::get_version());
+    println!("Component1 version: {}", component1::get_version());
+    println!("Component2 version: {}", component2::get_version());
 
     println!("\n--- Processing Pipeline ---");
 

@@ -1,13 +1,13 @@
 // main.rs
 
-use component1_lib::Component1;
-use component2_lib::Component2;
+use component1::Component1;
+use component2::Component2;
 
 fn main() {
     println!("\n\nPhase 02: Modular Monolith Application (main + 2 libs)\n");
 
-    println!("Component1 version: {}", component1_lib::get_version());
-    println!("Component2 version: {}", component2_lib::get_version());
+    println!("Component1 version: {}", component1::get_version());
+    println!("Component2 version: {}", component2::get_version());
 
     // Initialize components from separate Libs
 

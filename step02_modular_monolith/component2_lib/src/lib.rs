@@ -1,8 +1,5 @@
 // lib.rs
 
-// use serde::{Deserialize, Serialize};
-
-// #[derive(Debug, Serialize, Deserialize, Clone)]
 #[derive(Debug)]
 pub struct Component2Data {
     pub original: i32,
@@ -35,19 +32,5 @@ impl Component2 {
 }
 
 pub fn get_version() -> &'static str {
-    // "1.0.0"
     env!("CARGO_PKG_VERSION")
 }
-
-// #[cfg(test)]
-// mod tests {
-//     use super::*;
-
-//     #[test]
-//     fn test_transform() {
-//         let comp = Component2::new();
-//         let result = comp.transform(42);
-//         assert_eq!(result.original, 42);
-//         assert_eq!(result.transformed, "Value-0042");
-//     }
-// }
