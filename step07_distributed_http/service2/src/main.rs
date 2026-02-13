@@ -8,27 +8,6 @@ use tokio::net::TcpListener;
 /// Port on which this transformation service listens.
 const PORT: u16 = 3002;
 
-fn transform(request: TransformRequest) -> TransformResponse {
-    eprintln!("\t[Service2] Transforming request: {}", request.request_id);
-    eprintln!("\t[Service2] Input value: {}", request.value);
-
-    let transformed = format!("Value-{:04}", request.value);
-
-    TransformResponse {
-        original: request.value,
-        transformed,
-        request_id: request.request_id,
-    }
-}
-
-async fn handle_transform(Json(request): Json<TransformRequest>) -> Json<TransformResponse> {
-    Json(transform(request))
-}
-
-async fn handle_health() -> &'static str {
-    "ok"
-}
-
 #[tokio::main]
 async fn main() {
     eprintln!("\t[Service2] Transformation Service");
@@ -43,6 +22,27 @@ async fn main() {
     let listener = TcpListener::bind(&addr).await.expect("failed to bind port");
 
     axum::serve(listener, app).await.expect("server error");
+}
+
+async fn handle_health() -> &'static str {
+    "ok"
+}
+
+async fn handle_transform(Json(request): Json<TransformRequest>) -> Json<TransformResponse> {
+    Json(transform(request))
+}
+
+fn transform(request: TransformRequest) -> TransformResponse {
+    eprintln!("\t[Service2] Transforming request: {}", request.request_id);
+    eprintln!("\t[Service2] Input value: {}", request.value);
+
+    let transformed = format!("Value-{:04}", request.value);
+
+    TransformResponse {
+        original: request.value,
+        transformed,
+        request_id: request.request_id,
+    }
 }
 
 #[cfg(test)]

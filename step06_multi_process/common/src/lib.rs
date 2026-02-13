@@ -7,27 +7,29 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ProcessRequest {
     pub value: i32,
-    pub request_id: String,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ProcessResponse {
     pub value: i32,
     pub processed: bool,
-    pub request_id: String,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct TransformRequest {
     pub value: i32,
-    pub request_id: String,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct TransformResponse {
     pub original: i32,
     pub transformed: String,
-    pub request_id: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct VersionResponse {
+    pub service_name: String,
+    pub version: String,
 }
 
 // Simple protocol for message exchange
@@ -37,6 +39,8 @@ pub enum Message {
     ProcessResult(ProcessResponse),
     Transform(TransformRequest),
     TransformResult(TransformResponse),
+    GetVersion,
+    VersionResult(VersionResponse),
     Shutdown,
 }
 
@@ -49,4 +53,3 @@ impl Message {
         serde_json::from_str(json)
     }
 }
-

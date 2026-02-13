@@ -1,48 +1,20 @@
 // main.rs
 
-use common::{Message, TransformRequest, TransformResponse};
+use common::{Message, TransformRequest, TransformResponse, VersionResponse};
 use std::io::{self, BufRead, Write};
-use std::sync::Arc;
-use std::sync::atomic::{AtomicBool, Ordering};
 
 struct TransformationService;
-
-impl TransformationService {
-    fn new() -> Self {
-        eprintln!("\t[Service2] Initialized - Ready to transform requests");
-        TransformationService
-    }
-
-    fn transform(&self, request: TransformRequest) -> TransformResponse {
-        eprintln!("\t[Service2] Transforming request: {}", request.request_id);
-        eprintln!("\t[Service2] Input value: {}", request.value);
-
-        // Transform the value to a formatted string
-        let transformed = format!("Value-{:04}", request.value);
-
-        TransformResponse {
-            original: request.value,
-            transformed,
-            request_id: request.request_id,
-        }
-    }
-}
 
 fn main() {
     eprintln!("\t[Service2] Transformation Service");
     eprintln!("\t[Service2] Listening on STDIN for JSON messages...");
 
     let service = TransformationService::new();
-    let running = Arc::new(AtomicBool::new(true));
 
     let stdin = io::stdin();
     let mut stdout = io::stdout();
 
     for line in stdin.lock().lines() {
-        if !running.load(Ordering::Relaxed) {
-            break;
-        }
-
         match line {
             Ok(json_str) => {
                 if json_str.trim().is_empty() {
@@ -58,9 +30,16 @@ fn main() {
                         writeln!(stdout, "{}", json).unwrap();
                         stdout.flush().unwrap();
                     }
+                    Ok(Message::GetVersion) => {
+                        let message = Message::VersionResult(VersionResponse {
+                            service_name: "service2".to_string(),
+                            version: env!("CARGO_PKG_VERSION").to_string(),
+                        });
+                        writeln!(stdout, "{}", message.to_json()).unwrap();
+                        stdout.flush().unwrap();
+                    }
                     Ok(Message::Shutdown) => {
                         eprintln!("\t[Service2] Shutdown signal received");
-                        running.store(false, Ordering::Relaxed);
                         break;
                     }
                     Ok(_) => {
@@ -81,6 +60,25 @@ fn main() {
     eprintln!("\t[Service2] Shutting down");
 }
 
+impl TransformationService {
+    fn new() -> Self {
+        eprintln!("\t[Service2] Initialized - Ready to transform requests");
+        TransformationService
+    }
+
+    fn transform(&self, request: TransformRequest) -> TransformResponse {
+        eprintln!("\t[Service2] Input value: {}", request.value);
+
+        // Transform the value to a formatted string
+        let transformed = format!("Value-{:04}", request.value);
+
+        TransformResponse {
+            original: request.value,
+            transformed,
+        }
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -89,10 +87,7 @@ mod test {
     #[test]
     fn transform_formats_value() {
         let service = TransformationService::new();
-        let request = TransformRequest {
-            value: 42,
-            request_id: "test-1".to_string(),
-        };
+        let request = TransformRequest { value: 42 };
         let response = service.transform(request);
         assert_eq!(response.original, 42);
         assert_eq!(response.transformed, "Value-0042");
@@ -101,10 +96,7 @@ mod test {
     #[test]
     fn transform_pads_small_value() {
         let service = TransformationService::new();
-        let request = TransformRequest {
-            value: 7,
-            request_id: "test-2".to_string(),
-        };
+        let request = TransformRequest { value: 7 };
         let response = service.transform(request);
         assert_eq!(response.transformed, "Value-0007");
     }

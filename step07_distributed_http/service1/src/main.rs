@@ -8,28 +8,6 @@ use tokio::net::TcpListener;
 /// Port on which this processing service listens.
 const PORT: u16 = 3001;
 
-fn process(request: ProcessRequest) -> ProcessResponse {
-    eprintln!("\t[Service1] Processing request: {}", request.request_id);
-    eprintln!("\t[Service1] Input value: {}", request.value);
-
-    // Business logic: multiply by 2
-    let result = request.value * 2;
-
-    ProcessResponse {
-        value: result,
-        processed: true,
-        request_id: request.request_id,
-    }
-}
-
-async fn handle_process(Json(request): Json<ProcessRequest>) -> Json<ProcessResponse> {
-    Json(process(request))
-}
-
-async fn handle_health() -> &'static str {
-    "ok"
-}
-
 #[tokio::main]
 async fn main() {
     eprintln!("\t[Service1] Processing  Service");
@@ -44,6 +22,28 @@ async fn main() {
     let listener = TcpListener::bind(&addr).await.expect("failed to bind port");
 
     axum::serve(listener, app).await.expect("server error");
+}
+
+async fn handle_health() -> &'static str {
+    "ok"
+}
+
+async fn handle_process(Json(request): Json<ProcessRequest>) -> Json<ProcessResponse> {
+    Json(process(request))
+}
+
+fn process(request: ProcessRequest) -> ProcessResponse {
+    eprintln!("\t[Service1] Processing request: {}", request.request_id);
+    eprintln!("\t[Service1] Input value: {}", request.value);
+
+    // Business logic: multiply by 2
+    let result = request.value * 2;
+
+    ProcessResponse {
+        value: result,
+        processed: true,
+        request_id: request.request_id,
+    }
 }
 
 #[cfg(test)]
