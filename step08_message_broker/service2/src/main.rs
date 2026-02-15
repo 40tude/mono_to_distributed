@@ -1,12 +1,9 @@
-// Service2 — Transformation service (subscribes to NATS subject "service.transform")
+// main.rs
 //
 // Same pattern as service1: connect, subscribe, reply.
-// Compare with step06/service2 which used an HTTP server (Axum) instead.
-//
-// Rust guideline compliant 2025-05-14
 
 use bytes::Bytes;
-use common::{TransformRequest, TransformResponse, SUBJECT_TRANSFORM};
+use common::{SUBJECT_TRANSFORM, TransformRequest, TransformResponse};
 use tokio_stream::StreamExt;
 
 /// NATS server URL (default local port).

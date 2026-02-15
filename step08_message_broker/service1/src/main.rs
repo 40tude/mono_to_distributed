@@ -1,10 +1,7 @@
-// Service1 — Processing service (subscribes to NATS subject "service.process")
+// main.rs
 //
 // This service connects to the NATS broker, subscribes to a subject,
 // and replies to each incoming request with a processed result.
-// Compare with step06/service1 which used an HTTP server (Axum) instead.
-//
-// Rust guideline compliant 2025-05-14
 
 use bytes::Bytes;
 use common::{ProcessRequest, ProcessResponse, SUBJECT_PROCESS};

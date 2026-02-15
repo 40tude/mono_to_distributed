@@ -2,11 +2,6 @@
 
 * https://docs.nats.io/
 
-### May be useful
-- https://docs.nats.io/nats-concepts/core-nats/queue
-- https://docs.nats.io/nats-concepts/core-nats/pubsub
-- https://docs.nats.io/reference/faq
-
 ### Prerequisites: Install NATS Server
 
 * Unlike Step07 (where our Rust code *was* the server), a message broker is a **separate program** that runs alongside our services. We need to install it first.

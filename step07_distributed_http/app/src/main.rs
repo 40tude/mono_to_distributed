@@ -11,7 +11,7 @@ const SERVICE2_URL: &str = "http://127.0.0.1:3002";
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    println!("\n\nPhase 0: Distributed system (HTTP)\n");
+    println!("\n\nPhase 07: Distributed system (HTTP)\n");
 
     let client = reqwest::Client::new();
 

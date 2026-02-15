@@ -1,0 +1,113 @@
+// main.rs
+
+use common::{ProcessRequest, ProcessResponse, TransformRequest, TransformResponse};
+use uuid::Uuid;
+
+/// Base URL for service1 (processing).
+const SERVICE1_URL: &str = "http://127.0.0.1:3001";
+
+/// Base URL for service2 (transformation).
+const SERVICE2_URL: &str = "http://127.0.0.1:3002";
+
+/// Input values fed concurrently into the pipeline.
+const INPUT_VALUES: [i32; 5] = [10, 20, 30, 42, 50];
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
+    println!("\n\nPhase 07: Distributed system (HTTP)\n");
+
+    let client = reqwest::Client::new();
+
+    println!(
+        "--- Processing Distributed Pipeline ({} values concurrently) ---\n",
+        INPUT_VALUES.len()
+    );
+
+    // Spawn one task per input value
+    let mut join_set = tokio::task::JoinSet::new();
+
+    for &value in &INPUT_VALUES {
+        let request_id = Uuid::new_v4().to_string();
+        let short_id = &request_id[..8];
+        println!("[App] Spawning pipeline for value={value}  request_id={short_id}");
+
+        let client = client.clone();
+        let rid = request_id.clone();
+        join_set.spawn(async move { run_pipeline(client, value, rid).await });
+    }
+
+    println!();
+
+    // Collect results as they complete (arbitrary order)
+    let mut results: Vec<(i32, String, String)> = Vec::with_capacity(INPUT_VALUES.len());
+
+    while let Some(outcome) = join_set.join_next().await {
+        let (value, transformed, request_id) = outcome??;
+        let short_id = &request_id[..8];
+        println!("[App] Completed: value={value} -> {transformed}  request_id={short_id}");
+        results.push((value, transformed, request_id));
+    }
+
+    // Sort by input value for clean display
+    results.sort_by_key(|(value, _, _)| *value);
+
+    println!("\n--- Final Results (sorted by input value) ---");
+    for (value, transformed, request_id) in &results {
+        let short_id = &request_id[..8];
+        println!("  {value} -> {transformed}  [{short_id}]");
+    }
+
+    println!("\nExecution complete");
+
+    Ok(())
+}
+
+/// Runs the full pipeline for a single value: service1 (process) then service2 (transform).
+/// Returns `(original_value, transformed_string, request_id)`.
+async fn run_pipeline(
+    client: reqwest::Client,
+    input_value: i32,
+    request_id: String,
+) -> Result<(i32, String, String), Box<dyn std::error::Error + Send + Sync>> {
+    let short_id = &request_id[..8];
+
+    // Step 1: Send to Service1 (processing)
+    let process_request = ProcessRequest {
+        value: input_value,
+        request_id: request_id.clone(),
+    };
+
+    let result1: ProcessResponse = client
+        .post(format!("{SERVICE1_URL}/process"))
+        .json(&process_request)
+        .send()
+        .await?
+        .json()
+        .await?;
+
+    println!(
+        "[{short_id}] Service1 done: value={input_value} -> processed={}",
+        result1.value
+    );
+
+    // Step 2: Send to Service2 (transformation)
+    let transform_request = TransformRequest {
+        value: result1.value,
+        request_id: request_id.clone(),
+    };
+
+    let result2: TransformResponse = client
+        .post(format!("{SERVICE2_URL}/transform"))
+        .json(&transform_request)
+        .send()
+        .await?
+        .json()
+        .await?;
+
+    println!(
+        "[{short_id}] Service2 done: value={} -> transformed={}",
+        result2.original, result2.transformed
+    );
+
+    Ok((input_value, result2.transformed, request_id))
+}

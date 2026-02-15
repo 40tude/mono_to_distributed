@@ -24,7 +24,7 @@ cargo clippy --workspace       # lint all crates
 
 ## Rust Edition
 
-All crates use **edition 2024** with **resolver 3** (except step05 which uses resolver 2).
+All crates use **edition 2024** with **resolver 3**.
 
 ## Architecture Progression
 
@@ -46,9 +46,14 @@ All steps share identical business logic: `i32 → process (×2) → transform (
 
 - **Step 06**: Build service1/service2 first, then `cargo run -p orchestrator` (spawns children)
 - **Step 07**: Start service1 & service2 in separate terminals, then run orchestrator
-- **Step 08**: Requires NATS server (`winget install NATS.NATSServer`). Start: NATS → service1 → service2 → publisher (4 terminals)
+- **Step 08**: Requires NATS server (`winget install NATS.NATSServer`). Start: NATS → service1 → service2 → app (4 terminals)
 
 Each step has a `QUICK_START.md` with exact run instructions.
+
+## Ignored Directories
+
+- `temp/` — experimental step variants (not part of the project)
+- `docs/` — blog article drafts (`docs/stepXX.md`), one per step
 
 ## Key Dependencies
 
@@ -63,4 +68,4 @@ Each step has a `QUICK_START.md` with exact run instructions.
 - **Step 05**: `plugin_interface` crate defines C-compatible FFI symbols; components are `cdylib` only
 - **Step 06**: Orchestrator hardcodes exe paths from `.cargo/config.toml` `target-dir` — update `HEADER` const in `orchestrator/src/main.rs` if paths change
 - **Step 07**: Service endpoints: `POST /process` (port 3001), `POST /transform` (port 3002), `GET /health`
-- **Step 08**: NATS subjects defined in `common/src/lib.rs` (`SUBJECT_PROCESS`, `SUBJECT_TRANSFORM`)
+- **Step 08**: NATS subjects defined in `common/src/lib.rs` (`SUBJECT_PROCESS`, `SUBJECT_TRANSFORM`). `app` crate is the orchestrator (replaces former `publisher`)

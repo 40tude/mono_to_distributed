@@ -11,6 +11,14 @@ pub const SUBJECT_PROCESS: &str = "service.process";
 /// Subject for transformation requests (service2 listens here).
 pub const SUBJECT_TRANSFORM: &str = "service.transform";
 
+// --- NATS queue groups (load-balance instead of fan-out) ---
+
+/// Queue group for process workers (service1 instances).
+pub const QUEUE_PROCESS: &str = "process_workers";
+
+/// Queue group for transform workers (service2 instances).
+pub const QUEUE_TRANSFORM: &str = "transform_workers";
+
 // --- Request / Response types (identical to step06) ---
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -24,6 +32,8 @@ pub struct ProcessResponse {
     pub value: i32,
     pub processed: bool,
     pub request_id: String,
+    /// `None` on success, `Some(message)` on domain error.
+    pub error: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -37,6 +47,8 @@ pub struct TransformResponse {
     pub original: i32,
     pub transformed: String,
     pub request_id: String,
+    /// `None` on success, `Some(message)` on domain error.
+    pub error: Option<String>,
 }
 
 // --- Messaging abstraction (DIP: depend on this trait, not on NATS directly) ---
