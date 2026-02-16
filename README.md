@@ -10,6 +10,7 @@
 * [Associated Web page](https://www.40tude.fr/docs/06_programmation/rust/026_monolith_to_distributed/monolith_to_distirbuted.html)
 
 ## Usage
+* This repository is organized to support [the tutorial](https://www.40tude.fr/docs/06_programmation/rust/026_monolith_to_distributed/monolith_to_distirbuted.html) and illustrate each step discussed in the article, not to serve as a production-ready template.
 * Open each workspace in order in your preferred IDE
 * Rename the `.cargo/` folder
 * Read the `QUICK_START.md`. It contains specific instruction like:
