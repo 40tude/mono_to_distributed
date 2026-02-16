@@ -13,7 +13,8 @@
 use bytes::Bytes;
 use common::{
     Messaging, ProcessRequest, ProcessResponse, SUBJECT_PROCESS, SUBJECT_TRANSFORM,
-    TransformRequest, TransformResponse,
+    SUBJECT_VERSION_SERVICE1, SUBJECT_VERSION_SERVICE2, TransformRequest, TransformResponse,
+    VersionRequest, VersionResponse,
 };
 use std::sync::Arc;
 use std::time::Duration;
@@ -126,6 +127,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     println!("[App] Connecting to {NATS_URL}...");
     let broker = Arc::new(NatsMessaging::connect(NATS_URL).await?);
     println!("[App] Connected to NATS broker");
+
+    // Query service versions
+    let ver_id = Uuid::new_v4().to_string();
+    let ver_req = serde_json::to_vec(&VersionRequest {
+        request_id: ver_id,
+    })?;
+
+    let reply1 = broker.request(SUBJECT_VERSION_SERVICE1, ver_req.clone()).await?;
+    let v1: VersionResponse = serde_json::from_slice(&reply1)?;
+    println!("[App] {} version: {}", v1.service_name, v1.version);
+
+    let reply2 = broker.request(SUBJECT_VERSION_SERVICE2, ver_req).await?;
+    let v2: VersionResponse = serde_json::from_slice(&reply2)?;
+    println!("[App] {} version: {}", v2.service_name, v2.version);
 
     println!(
         "\n--- Processing Distributed Pipeline ({} values concurrently) ---\n",

@@ -3,7 +3,10 @@
 // Same pattern as service1: connect, subscribe, reply.
 
 use bytes::Bytes;
-use common::{QUEUE_TRANSFORM, SUBJECT_TRANSFORM, TransformRequest, TransformResponse};
+use common::{
+    QUEUE_TRANSFORM, SUBJECT_TRANSFORM, SUBJECT_VERSION_SERVICE2, TransformRequest,
+    TransformResponse, VersionRequest, VersionResponse,
+};
 use tokio_stream::StreamExt;
 
 /// NATS server URL (default local port).
@@ -51,6 +54,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut subscription = client
         .queue_subscribe(SUBJECT_TRANSFORM, QUEUE_TRANSFORM.into())
         .await?;
+
+    let mut version_sub = client.subscribe(SUBJECT_VERSION_SERVICE2).await?;
     eprintln!("\t[Service2] Waiting for requests...");
 
     // Race between incoming messages and CTRL+C for graceful shutdown
@@ -70,6 +75,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                         }
                     }
                     None => break,
+                }
+            }
+            msg = version_sub.next() => {
+                if let Some(message) = msg {
+                    let req: VersionRequest = serde_json::from_slice(&message.payload)?;
+                    let resp = VersionResponse {
+                        service_name: "Service2".to_string(),
+                        version: env!("CARGO_PKG_VERSION").to_string(),
+                        request_id: req.request_id,
+                    };
+                    if let Some(reply_subject) = message.reply {
+                        let bytes = Bytes::from(serde_json::to_vec(&resp)?);
+                        client.publish(reply_subject, bytes).await?;
+                    }
                 }
             }
             _ = &mut shutdown => {

@@ -11,6 +11,12 @@ pub const SUBJECT_PROCESS: &str = "service.process";
 /// Subject for transformation requests (service2 listens here).
 pub const SUBJECT_TRANSFORM: &str = "service.transform";
 
+/// Subject for version queries to service1.
+pub const SUBJECT_VERSION_SERVICE1: &str = "service.version.service1";
+
+/// Subject for version queries to service2.
+pub const SUBJECT_VERSION_SERVICE2: &str = "service.version.service2";
+
 // --- NATS queue groups (load-balance instead of fan-out) ---
 
 /// Queue group for process workers (service1 instances).
@@ -18,6 +24,20 @@ pub const QUEUE_PROCESS: &str = "process_workers";
 
 /// Queue group for transform workers (service2 instances).
 pub const QUEUE_TRANSFORM: &str = "transform_workers";
+
+// --- Version request / response ---
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct VersionRequest {
+    pub request_id: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct VersionResponse {
+    pub service_name: String,
+    pub version: String,
+    pub request_id: String,
+}
 
 // --- Request / Response types (identical to step06) ---
 
